@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="801d739b-758b-4853-98f6-ad94cc958a91" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="ProjectId" id="1nW8zEdeEsUw70OiWqVDwDtU6G5" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="settings.editor.selected.configurable" value="web.server" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="801d739b-758b-4853-98f6-ad94cc958a91" name="Default Changelist" comment="" />
+      <created>1611494747048</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1611494747048</updated>
+      <workItem from="1611494748346" duration="1103000" />
+      <workItem from="1611565108961" duration="2058000" />
+      <workItem from="1611571754901" duration="213000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="733" y="381" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1611568440244">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state x="733" y="381" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1611568440244" />
+    <state x="630" y="290" key="NewPhpClassDialog" timestamp="1611568294079">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state x="630" y="290" key="NewPhpClassDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1611568294079" />
+    <state x="716" y="467" key="NewPhpFileDialog" timestamp="1611568982058">
+      <screen x="0" y="25" width="1792" height="1017" />
+    </state>
+    <state x="716" y="487" key="NewPhpFileDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1611568241858" />
+    <state x="716" y="467" key="NewPhpFileDialog/0.25.1792.1017@0.25.1792.1017" timestamp="1611568982058" />
+    <state x="405" y="196" key="SettingsEditor" timestamp="1611495074879">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state x="405" y="196" key="SettingsEditor/0.0.1792.1120@0.0.1792.1120" timestamp="1611495074879" />
+  </component>
+</project>
