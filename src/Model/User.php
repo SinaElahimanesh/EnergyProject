@@ -69,27 +69,27 @@ class User {
 
     }
 
-//    public function insert(Array $input) {
-//        // insert a user to database
-//        $statement = "INSERT INTO USERS (user_name, phone, password, email, nationalCode, address, residence, schoolName)
-//                    VALUES (:user_name, :phone, :password, :email, :nationalCode, :address, :residence, :schoolName);";
-//        try {
-//            $statement = $this->db->prepare($statement);
-//            $statement->execute(array(
-//                'user_name' => $input['user_name'],
-//                'phone' => $input['phone'],
-//                'password' => $input['password'],
-//                'email' => $input['email'] ?? null,
-//                'nationalCode' => $input['nationalCode'] ?? null,
-//                'address' => $input['address'] ?? null,
-//                'residence' => $input['residence'] ?? null,
-//                'schoolName' => $input['schoolName'] ?? null
-//            ));
-//            return $statement->rowCount();
-//        } catch (\PDOException $e) {
-//            exit($e->getMessage());
-//        }
-//    }
+    public function insert(Array $input) {
+        // insert a user to database
+        $statement = "INSERT INTO USERS (user_name, phone, password, email, nationalCode, address, residence, schoolName)
+                    VALUES (:user_name, :phone, :password, :email, :nationalCode, :address, :residence, :schoolName);";
+        try {
+            $statement = $this->db->prepare($statement);
+            $statement->execute(array(
+                'user_name' => $input['user_name'],
+                'phone' => $input['phone'],
+                'password' => $input['password'],
+                'email' => $input['email'] ?? null,
+                'nationalCode' => $input['nationalCode'] ?? null,
+                'address' => $input['address'] ?? null,
+                'residence' => $input['residence'] ?? null,
+                'schoolName' => $input['schoolName'] ?? null
+            ));
+            return $statement->rowCount();
+        } catch (\PDOException $e) {
+            exit($e->getMessage());
+        }
+    }
 
     public function update($id, Array $input) {
         // update user's data (for completing account information)
