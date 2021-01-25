@@ -25,5 +25,9 @@ class database
         }
     }
 
+    public function makeSafe($input){
+        return stripcslashes(htmlspecialchars(trim($input)));
+    }
+
 
 }

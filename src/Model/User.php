@@ -1,13 +1,38 @@
 <?php
-
+require_once ("../Controller/database.php");
 
 class User {
 
     private $db = null;
 
+    private $isAuthenticated;
+    private $userId;
+    private $isEnabled;
+
     public function __construct($db) {
         $this->db = $db;
+        $this->isAuthenticated=false;
+        $this->isEnabled=false;
+        $this->userId=null;
     }
+
+    public function saveUserObjectInSession(){ /// at the end of each page!!!!
+        if(session_status()==PHP_SESSION_NONE) {
+            session_start();
+        }
+        $_SESSION["userObj"]=serialize($this);
+    }
+
+    public function loadUserFromSession(){
+        if(session_status()==PHP_SESSION_NONE) {
+            session_start();
+        }
+        $obj=unserialize($_SESSION["userObj"]);
+        $this->userId=$obj->userId;
+        $this->isEnabled=$obj->isEnabeled;
+        $this->isAuthenticated=$obj->isAuthenticated;
+    }
+
 
     public function findAll() {
         // find all users
@@ -34,27 +59,37 @@ class User {
         }
     }
 
-    public function insert(Array $input) {
-        // insert a user to database
-        $statement = "INSERT INTO USERS (user_name, phone, password, email, nationalCode, address, residence, schoolName)
-                    VALUES (:user_name, :phone, :password, :email, :nationalCode, :address, :residence, :schoolName);";
-        try {
-            $statement = $this->db->prepare($statement);
-            $statement->execute(array(
-                'user_name' => $input['user_name'],
-                'phone' => $input['phone'],
-                'password' => $input['password'],
-                'email' => $input['email'] ?? null,
-                'nationalCode' => $input['nationalCode'] ?? null,
-                'address' => $input['address'] ?? null,
-                'residence' => $input['residence'] ?? null,
-                'schoolName' => $input['schoolName'] ?? null
-            ));
-            return $statement->rowCount();
-        } catch (\PDOException $e) {
-            exit($e->getMessage());
-        }
+
+    public function addUserToDataBase(َ$phoneNumber,$password,$fullName){
+        $db=new database();
+        $phoneNumber=$db->makeSafe($phoneNumber);
+        $password=$db->makeSafe($password);
+        $fullName=$db->makeSafe($fullName);
+        /// not completed!
+
     }
+
+//    public function insert(Array $input) {
+//        // insert a user to database
+//        $statement = "INSERT INTO USERS (user_name, phone, password, email, nationalCode, address, residence, schoolName)
+//                    VALUES (:user_name, :phone, :password, :email, :nationalCode, :address, :residence, :schoolName);";
+//        try {
+//            $statement = $this->db->prepare($statement);
+//            $statement->execute(array(
+//                'user_name' => $input['user_name'],
+//                'phone' => $input['phone'],
+//                'password' => $input['password'],
+//                'email' => $input['email'] ?? null,
+//                'nationalCode' => $input['nationalCode'] ?? null,
+//                'address' => $input['address'] ?? null,
+//                'residence' => $input['residence'] ?? null,
+//                'schoolName' => $input['schoolName'] ?? null
+//            ));
+//            return $statement->rowCount();
+//        } catch (\PDOException $e) {
+//            exit($e->getMessage());
+//        }
+//    }
 
     public function update($id, Array $input) {
         // update user's data (for completing account information)
