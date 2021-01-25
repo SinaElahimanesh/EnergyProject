@@ -1,7 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="801d739b-758b-4853-98f6-ad94cc958a91" name="Default Changelist" comment="" />
+    <list default="true" id="801d739b-758b-4853-98f6-ad94cc958a91" name="Default Changelist" comment="a">
+      <change afterPath="$PROJECT_DIR$/src/DataBase.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataBase.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/GettersFromDataBase.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/GettersFromDataBase.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Register.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Register.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assisstant.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/assisstant.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/complete_UserData.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/complete_UserData.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/editPersonalInfo.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/editPersonalInfo.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/loginUsers.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/loginUsers.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/submitForms.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/submitForms.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/usersValidation.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/usersValidation.php" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -26,6 +56,11 @@
     <property name="settings.editor.selected.configurable" value="web.server" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -37,18 +72,54 @@
       <workItem from="1611494748346" duration="1103000" />
       <workItem from="1611565108961" duration="2058000" />
       <workItem from="1611571754901" duration="213000" />
-      <workItem from="1611573539483" duration="226000" />
+      <workItem from="1611573539483" duration="719000" />
+      <workItem from="1611574561980" duration="1360000" />
     </task>
+    <task id="LOCAL-00001" summary="a">
+      <created>1611573877112</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1611573877113</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="a" />
+    <option name="LAST_COMMIT_MESSAGE" value="a" />
+  </component>
   <component name="WindowStateProjectService">
+    <state x="360" y="219" width="1071" height="720" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1611588802097">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state x="360" y="219" width="1071" height="720" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1611588802097" />
     <state x="733" y="381" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1611568440244">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="733" y="381" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1611568440244" />
+    <state x="753" y="461" key="Github.ShareDialog" timestamp="1611573819473">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state x="753" y="461" key="Github.ShareDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1611573819473" />
+    <state x="656" y="269" key="Github.UntrackedFilesDialog" timestamp="1611573826171">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state x="656" y="269" key="Github.UntrackedFilesDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1611573826171" />
     <state x="630" y="290" key="NewPhpClassDialog" timestamp="1611568294079">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
@@ -62,5 +133,13 @@
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="405" y="196" key="SettingsEditor/0.0.1792.1120@0.0.1792.1120" timestamp="1611495074879" />
+    <state x="496" y="297" key="Vcs.Push.Dialog.v2" timestamp="1611573907408">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state x="496" y="297" key="Vcs.Push.Dialog.v2/0.0.1792.1120@0.0.1792.1120" timestamp="1611573907408" />
+    <state x="658" y="453" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1611573862812">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state x="658" y="453" key="git4idea.remote.GitConfigureRemotesDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1611573862812" />
   </component>
 </project>
