@@ -1,7 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="801d739b-758b-4853-98f6-ad94cc958a91" name="Default Changelist" comment="" />
+    <list default="true" id="801d739b-758b-4853-98f6-ad94cc958a91" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/database.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataBase.php" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,12 +43,16 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="web.server" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="801d739b-758b-4853-98f6-ad94cc958a91" name="Default Changelist" comment="" />
@@ -38,24 +64,38 @@
       <workItem from="1611565108961" duration="2058000" />
       <workItem from="1611571754901" duration="213000" />
       <workItem from="1611573539483" duration="226000" />
+      <workItem from="1611591034734" duration="3181000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
+    <option name="version" value="2" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="WindowStateProjectService">
     <state x="733" y="381" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1611568440244">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="733" y="381" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1611568440244" />
-    <state x="630" y="290" key="NewPhpClassDialog" timestamp="1611568294079">
-      <screen x="0" y="0" width="1792" height="1120" />
+    <state x="450" y="255" key="NewPhpClassDialog" timestamp="1611602118998">
+      <screen x="0" y="0" width="1280" height="984" />
     </state>
+    <state x="450" y="255" key="NewPhpClassDialog/0.0.1280.984@0.0.1280.984" timestamp="1611602118998" />
     <state x="630" y="290" key="NewPhpClassDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1611568294079" />
-    <state x="716" y="467" key="NewPhpFileDialog" timestamp="1611568982058">
-      <screen x="0" y="25" width="1792" height="1017" />
+    <state x="511" y="428" key="NewPhpFileDialog" timestamp="1611601227221">
+      <screen x="0" y="0" width="1280" height="984" />
     </state>
+    <state x="511" y="428" key="NewPhpFileDialog/0.0.1280.984@0.0.1280.984" timestamp="1611601227221" />
     <state x="716" y="487" key="NewPhpFileDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1611568241858" />
     <state x="716" y="467" key="NewPhpFileDialog/0.25.1792.1017@0.25.1792.1017" timestamp="1611568982058" />
     <state x="405" y="196" key="SettingsEditor" timestamp="1611495074879">
