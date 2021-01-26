@@ -177,7 +177,7 @@ class User {
 
 
     public function getUserByPhoneNumber($phoneNumber){
-        $statement = "SELECT `accountId,password` FROM users WHERE `phoneNum`=?";
+        $statement = "SELECT `accountId,password,enabled` FROM users WHERE `phoneNum`=?";
         try {
             $statement = $this->db->getConnection()->prepare($statement);
             $statement->execute(array($phoneNumber));

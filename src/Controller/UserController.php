@@ -9,12 +9,11 @@ class UserController {
 
     private $userGateway;
 
-    public function __construct($db, $requestMethod, $userId) {
-        $this->db = $db;
+    public function __construct($requestMethod, $userId) {
+        $this->db = new database();
         $this->requestMethod = $requestMethod;
         $this->userId = $userId;
-
-        $this->userGateway = new User($db);
+        $this->userGateway = new User();
     }
 
     public function processRequest() {
@@ -102,8 +101,7 @@ class UserController {
         return $response;
     }
 
-    public function loginUser(){
-
+    public function login(){
         $input = (array) json_decode(file_get_contents('php://input'), TRUE);
         if($this->validateUser($input)==false){
             return $this->unprocessableEntityResponse();
@@ -115,10 +113,37 @@ class UserController {
         if(password_verify($input["password"],$result["password"])==false){
             return $this->notFoundResponse();
         }
-        if(session_status()==PHP_SESSION_NONE){
-            session_start();
+
+        session_set_cookie_params(86400 * 7);
+        session_name("mySession");
+        session_start();
+        $this->registerLoginUserSession($result["accountId"],session_id());
+        $this->userGateway->setIsAuthenticated(true);
+        $this->userGateway->setIsEnabled($result["enabled"]);
+        $this->userGateway->saveUserObjectInSession();
+    }
+
+    private function registerLoginUserSession($accountId,$sessionId){
+        $query = 'INSERT INTO `users_sessions` (sessionId, accountId, loginTime) VALUES (:sid, :accountId, NOW())';
+        $values = array(':sid' => $sessionId, ':accountId' => $accountId);
+        try
+        {
+            $res = $this->db->getConnection()->prepare($query);
+            $res->execute($values);
         }
-        //// not complete!!!
+        catch (PDOException $e)
+        {
+            /* If there is a PDO exception, throw a standard exception */
+            throw new Exception('Database query error');
+        }
+
+    }
+
+
+    public function sessionBasedLogin(){
+        if(isset($_COOKIE["mySession"])){
+
+        }
 
     }
 
