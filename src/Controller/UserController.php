@@ -53,7 +53,7 @@ class UserController {
 
 
     private function getUser($id) {
-        $result = $this->userGateway->find($id);
+        $result = $this->userGateway->findUser($id);
         if (! $result) {
             return $this->notFoundResponse();
         }
@@ -74,7 +74,7 @@ class UserController {
     }
 
     private function updateUserFromRequest($id) {
-        $result = $this->userGateway->find($id);
+        $result = $this->userGateway->findUser($id);
         if (! $result) {
             return $this->notFoundResponse();
         }
@@ -91,7 +91,7 @@ class UserController {
     }
 
     private function deleteUser($id) {
-        $result = $this->userGateway->find($id);
+        $result = $this->userGateway->findUser($id);
         if (! $result) {
             return $this->notFoundResponse();
         }

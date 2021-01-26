@@ -84,8 +84,6 @@ class User {
 
 
 
-
-
     public function findAll() {
         // find all users
         $statement = "SELECT * FROM USERS;";
@@ -99,7 +97,7 @@ class User {
         }
     }
 
-    public function find($id) {
+    public function findUser($id) {
         // find an specific id
         $statement = "SELECT * FROM USERS WHERE accountId=?";
         try {
@@ -142,10 +140,11 @@ class User {
                      residence= :residence,
                      schoolName= :schoolName,
                      enabled= :enabled
-                     ;";
+                     WHERE id = :id;";
         try {
             $statement = $this->db->getConnection()->prepare($statement);
             $statement->execute(array(
+                'id' => (int) $id,
                 'email' => $input['email'],
                 'nationalCode' => $input['nationalCode'],
                 'address' => $input['address'],
