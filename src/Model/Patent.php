@@ -9,7 +9,7 @@ class Patent {
     }
 
 
-    public function findAllPatents($id) {
+    public function findAllPatents() {
         // find all patents of all students
         $statement = "SELECT * FROM PATENTS;";
         try {
@@ -26,6 +26,7 @@ class Patent {
         $statement = "SELECT * FROM PATENTS WHERE ownerId=?;";
         try {
             $statement= $this->db->getConnection()->query($statement);
+            $statement->execute(array($id));
             $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
             return $result;
         } catch (\PDOException $e) {
@@ -38,6 +39,7 @@ class Patent {
         $statement = "SELECT * FROM PATENTS WHERE patentId=?;";
         try {
             $statement= $this->db->getConnection()->query($statement);
+            $statement->execute(array($id));
             $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
             return $result;
         } catch (\PDOException $e) {
@@ -73,6 +75,7 @@ class Patent {
         try {
             $statement = $this->db->getConnection()->prepare($statement);
             $statement->execute(array(
+                'id' => (int) $id,
                 'expertId' => $input['expertId'],
             ));
             return $statement->rowCount();
@@ -89,6 +92,7 @@ class Patent {
         try {
             $statement = $this->db->getConnection()->prepare($statement);
             $statement->execute(array(
+                'id' => (int) $id,
                 'extraResources' => $input['extraResources'],
             ));
             return $statement->rowCount();
@@ -105,6 +109,7 @@ class Patent {
         try {
             $statement = $this->db->getConnection()->prepare($statement);
             $statement->execute(array(
+                'id' => (int) $id,
                 'patentStatus' => $input['patentStatus'],
             ));
             return $statement->rowCount();

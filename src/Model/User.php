@@ -144,6 +144,7 @@ class User {
         try {
             $statement = $this->db->getConnection()->prepare($statement);
             $statement->execute(array(
+                'id' => (int) $id,
                 'email' => $input['email'],
                 'nationalCode' => $input['nationalCode'],
                 'address' => $input['address'],

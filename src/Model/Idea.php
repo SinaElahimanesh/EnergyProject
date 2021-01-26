@@ -1,17 +1,15 @@
 <?php
 
 
-class Idea
-{
+class Idea {
     private $db;
 
-    function __construct()
-    {
+    function __construct() {
         $db=new database();
     }
 
 
-    public function findAllIdeas($id) {
+    public function findAllIdeas() {
         // find all ideas of all students
         $statement = "SELECT * FROM IDEAS;";
         try {
@@ -28,6 +26,7 @@ class Idea
         $statement = "SELECT * FROM IDEAS WHERE ownerId=?;";
         try {
             $statement= $this->db->getConnection()->query($statement);
+            $statement->execute(array($id));
             $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
             return $result;
         } catch (\PDOException $e) {
@@ -40,6 +39,7 @@ class Idea
         $statement = "SELECT * FROM IDEAS WHERE ideaId=?;";
         try {
             $statement= $this->db->getConnection()->query($statement);
+            $statement->execute(array($id));
             $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
             return $result;
         } catch (\PDOException $e) {
@@ -71,10 +71,11 @@ class Idea
         // update idea's data (EXPERT)
         $statement = "UPDATE IDEAS SET 
                      expertId= :expertId,
-                     ;";
+                      WHERE id = :id;";
         try {
             $statement = $this->db->getConnection()->prepare($statement);
             $statement->execute(array(
+                'id' => (int) $id,
                 'expertId' => $input['expertId'],
             ));
             return $statement->rowCount();
@@ -87,10 +88,11 @@ class Idea
         // update idea's data (EXTRA_RESOURCES)
         $statement = "UPDATE IDEAS SET 
                      extraResources= :extraResources,
-                     ;";
+                     WHERE id = :id;";
         try {
             $statement = $this->db->getConnection()->prepare($statement);
             $statement->execute(array(
+                'id' => (int) $id,
                 'extraResources' => $input['extraResources'],
             ));
             return $statement->rowCount();
@@ -103,10 +105,11 @@ class Idea
         // update idea's data (IDEA_STATUS)
         $statement = "UPDATE IDEAS SET 
                      ideaStatus= :ideaStatus,
-                     ;";
+                      WHERE id = :id;";
         try {
             $statement = $this->db->getConnection()->prepare($statement);
             $statement->execute(array(
+                'id' => (int) $id,
                 'ideaStatus' => $input['ideaStatus'],
             ));
             return $statement->rowCount();
