@@ -140,7 +140,7 @@ class User {
                      residence= :residence,
                      schoolName= :schoolName,
                      enabled= :enabled
-                     ;";
+                     WHERE id = :id;";
         try {
             $statement = $this->db->getConnection()->prepare($statement);
             $statement->execute(array(

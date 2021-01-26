@@ -69,7 +69,7 @@ class Patent {
         // update patent's data (EXPERT)
         $statement = "UPDATE PATENTS SET 
                      expertId= :expertId,
-                     ;";
+                     WHERE id = :id;";
         try {
             $statement = $this->db->getConnection()->prepare($statement);
             $statement->execute(array(
@@ -85,7 +85,7 @@ class Patent {
         // update patent's data (EXTRA_RESOURCES)
         $statement = "UPDATE PATENTS SET 
                      extraResources= :extraResources,
-                     ;";
+                     WHERE id = :id;";
         try {
             $statement = $this->db->getConnection()->prepare($statement);
             $statement->execute(array(
@@ -101,7 +101,7 @@ class Patent {
         // update patent's data (PATENT_STATUS)
         $statement = "UPDATE PATENTS SET 
                      patentStatus= :patentStatus,
-                     ;";
+                     WHERE id = :id;";
         try {
             $statement = $this->db->getConnection()->prepare($statement);
             $statement->execute(array(
