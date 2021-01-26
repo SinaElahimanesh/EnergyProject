@@ -84,8 +84,6 @@ class User {
 
 
 
-
-
     public function findAll() {
         // find all users
         $statement = "SELECT * FROM USERS;";
@@ -99,7 +97,7 @@ class User {
         }
     }
 
-    public function find($id) {
+    public function findUser($id) {
         // find an specific id
         $statement = "SELECT * FROM USERS WHERE accountId=?";
         try {
