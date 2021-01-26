@@ -7,22 +7,25 @@ class database
 
     function __construct()
     {
-       $this->connection = new mysqli("localHost","alirezaeiji151379","alirezaeiji","energy_Project");
+       $servername= "localHost";
+       $username="alirezaeiji151379";
+       $password="alirezaeiji";
+       $dbname="energy_Project";
+       $this->connection = new PDO("mysql:host=$servername;dbname=$dbname",$username,$password);
+       $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
     function __destruct()
     {
         // TODO: Implement __destruct() method.
-        $this->connection->close();
     }
 
-    public function query($queryStr){
-        if(is_null($this->connection)){
-            return;
-        }
-        else{
-            return $this->connection->query($queryStr);
-        }
+    public function closeConnection(){
+       $this->connection=null;
+    }
+
+    public function getConnection(){
+        return $this->connection;
     }
 
     public function makeSafe($input){

@@ -84,8 +84,10 @@ class UserController {
             return $this->unprocessableEntityResponse();
         }
         $this->userGateway->update($id, $input);
+        $this->userGateway->setIsEnabled(true);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = null;
+        $this->userGateway->saveUserObjectInSession();
         return $response;
     }
 
@@ -98,6 +100,26 @@ class UserController {
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = null;
         return $response;
+    }
+
+    public function loginUser(){
+
+        $input = (array) json_decode(file_get_contents('php://input'), TRUE);
+        if($this->validateUser($input)==false){
+            return $this->unprocessableEntityResponse();
+        }
+        $result=$this->userGateway->getUserByPhoneNumber($input["phone"]);
+        if(!$result){
+            return $this->notFoundResponse();
+        }
+        if(password_verify($input["password"],$result["password"])==false){
+            return $this->notFoundResponse();
+        }
+        if(session_status()==PHP_SESSION_NONE){
+            session_start();
+        }
+        //// not complete!!!
+
     }
 
     private function validateUser($input) {
