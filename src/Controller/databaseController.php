@@ -1,7 +1,7 @@
 <?php
 
 
-class database
+class databaseController
 {
     private $connection;
 
@@ -18,10 +18,7 @@ class database
     function __destruct()
     {
         // TODO: Implement __destruct() method.
-    }
-
-    public function closeConnection(){
-       $this->connection=null;
+        $this->connection=null;
     }
 
     public function getConnection(){

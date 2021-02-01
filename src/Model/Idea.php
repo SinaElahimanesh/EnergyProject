@@ -5,7 +5,7 @@ class Idea {
     private $db;
 
     function __construct() {
-        $db=new database();
+        $db=new databaseController();
     }
 
 
@@ -49,7 +49,7 @@ class Idea {
 
     public function insert(Array $input) {
 
-        // insert an idea to database
+        // insert an idea to databaseController
         $statement = "INSERT INTO PATENTS (idea_name, ownerId, expertId, ideaStatus, description, extraResources)
                     VALUES (:idea_name, :ownerId, :expertId, :ideaStatus, :description, :extraResources);";
         try {

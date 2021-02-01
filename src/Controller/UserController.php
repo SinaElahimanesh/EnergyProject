@@ -5,15 +5,10 @@ class UserController {
 
     private $db;
     private $requestMethod;
-    private $userId;
 
-    private $userGateway;
-
-    public function __construct($requestMethod, $userId) {
-        $this->db = new database();
+    public function __construct($requestMethod) {
+        $this->db = null;
         $this->requestMethod = $requestMethod;
-        $this->userId = $userId;
-        $this->userGateway = new User();
     }
 
     public function processRequest() {
@@ -45,21 +40,50 @@ class UserController {
     }
 
     private function getAllUsers() {
-        $result = $this->userGateway->findAll();
+        $result = $this->findAll();
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode($result);
         return $response;
     }
 
 
+    public function getUserByPhoneNumber($phoneNumber){
+        $statement = "SELECT `accountId,password,enabled,type` FROM users WHERE `phoneNum`=?";
+        try {
+            $db=new databaseController();
+            $statement = $db->getConnection()->prepare($statement);
+            $statement->execute();
+            $result=$statement->setFetchMode(PDO::FETCH_ASSOC);
+            if(count($result)==0) return null;
+            return $result;
+        }catch (\PDOException $e){
+            exit($e->getMessage());
+        }
+    }
+
+
     private function getUser($id) {
-        $result = $this->userGateway->findUser($id);
+        $result = $this->findUser($id);
         if (! $result) {
             return $this->notFoundResponse();
         }
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode($result);
         return $response;
+    }
+
+    private function findAll() {
+        // find all users
+        $statement = "SELECT * FROM USERS;";
+        try {
+            $db= new databaseController();
+            $statement= $db->getConnection()->query($statement);
+            $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+
+            return $result;
+        } catch (\PDOException $e) {
+            exit($e->getMessage());
+        }
     }
 
     private function createUserFromRequest() {
@@ -67,14 +91,35 @@ class UserController {
         if (! $this->validateUser($input)) {
             return $this->unprocessableEntityResponse();
         }
-        $this->userGateway->insert($input);
+        $this->insert($input);
         $response['status_code_header'] = 'HTTP/1.1 201 Created';
         $response['body'] = null;
         return $response;
     }
 
+    private function insert(Array $input) {
+
+        // insert a user to databaseController
+        $db=new databaseController();
+        $statement = "INSERT INTO USERS (user_name, phone, password, email, nationalCode, address, residence, schoolName)
+                    VALUES (:user_name, :phone, :password, :email, :nationalCode, :address, :residence, :schoolName);";
+        try {
+            $input["password"]=password_hash($db->makeSafe($input["password"]),PASSWORD_DEFAULT);
+            $statement = $db->getConnection()->prepare($statement);
+            $statement->execute(array(
+                'phone' => $input['phone'],
+                'password' => $input['password'],
+                'fullname' => $input['fullname']
+            ));
+            return $statement->rowCount();
+        } catch (\PDOException $e) {
+            exit($e->getMessage());
+        }
+    }
+
+
     private function updateUserFromRequest($id) {
-        $result = $this->userGateway->findUser($id);
+        $result = $this->findUser($id);
         if (! $result) {
             return $this->notFoundResponse();
         }
@@ -82,70 +127,87 @@ class UserController {
         if (! $this->validateUser($input)) {
             return $this->unprocessableEntityResponse();
         }
-        $this->userGateway->update($id, $input);
-        $this->userGateway->setIsEnabled(true);
+        $this->update($id, $input);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = null;
-        $this->userGateway->saveUserObjectInSession();
+        $user=$this->loadUserFromSession();
+        $user->setEnabled(true);
+        $this->saveUserObjectInSession($user);
         return $response;
     }
 
+    private function update($id, Array $input) {
+        // update user's data (for completing account information)
+        $statement = "UPDATE USERS SET 
+                     email= :email,
+                     nationalCode= :nationalCode,
+                     address= :address,
+                     residence= :residence,
+                     schoolName= :schoolName,
+                     enabled= :enabled
+                     WHERE id = :id;";
+        try {
+            $db=new databaseController();
+            $statement = $db->getConnection()->prepare($statement);
+            $statement->execute(array(
+                'id' => (int) $id,
+                'email' => $input['email'],
+                'nationalCode' => $input['nationalCode'],
+                'address' => $input['address'],
+                'residence' => $input['residence'],
+                'schoolName' => $input['schoolName'],
+                'fullname'   => $input["fullname"],
+                'enabled' => 1
+            ));
+            return $statement->rowCount();
+        } catch (\PDOException $e) {
+            exit($e->getMessage());
+        }
+    }
+
+
     private function deleteUser($id) {
-        $result = $this->userGateway->findUser($id);
+        $result = $this->findUser($id);
         if (! $result) {
             return $this->notFoundResponse();
         }
-        $this->userGateway->delete($id);
+        $this->delete($id);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = null;
         return $response;
     }
 
-    public function login(){
-        $input = (array) json_decode(file_get_contents('php://input'), TRUE);
-        if($this->validateUser($input)==false){
-            return $this->unprocessableEntityResponse();
+    private function delete($id) {
+        // delete a user
+        $statement = "
+            DELETE FROM USERS
+            WHERE id = :id;
+        ";
+        try {
+            $db=new databaseController();
+            $statement = $db->getConnection()->prepare($statement);
+            $statement->execute(array('id' => $id));
+            return $statement->rowCount();
+        } catch (\PDOException $e) {
+            exit($e->getMessage());
         }
-        $result=$this->userGateway->getUserByPhoneNumber($input["phone"]);
-        if(!$result){
-            return $this->notFoundResponse();
-        }
-        if(password_verify($input["password"],$result["password"])==false){
-            return $this->notFoundResponse();
-        }
-
-        session_set_cookie_params(86400 * 7);
-        session_name("mySession");
-        session_start();
-        $this->registerLoginUserSession($result["accountId"],session_id());
-        $this->userGateway->setIsAuthenticated(true);
-        $this->userGateway->setIsEnabled($result["enabled"]);
-        $this->userGateway->saveUserObjectInSession();
     }
 
-    private function registerLoginUserSession($accountId,$sessionId){
-        $query = 'INSERT INTO `users_sessions` (sessionId, accountId, loginTime) VALUES (:sid, :accountId, NOW())';
-        $values = array(':sid' => $sessionId, ':accountId' => $accountId);
-        try
-        {
-            $res = $this->db->getConnection()->prepare($query);
-            $res->execute($values);
+    private function findUser($id) {
+        // find an specific id
+        $statement = "SELECT * FROM USERS WHERE accountId=?";
+        try {
+            $db=new databaseController();
+            $statement = $db->getConnection()->prepare($statement);
+            $statement->execute(array($id));
+            $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+            return $result;
+        } catch (\PDOException $e) {
+            exit($e->getMessage());
         }
-        catch (PDOException $e)
-        {
-            /* If there is a PDO exception, throw a standard exception */
-            throw new Exception('Database query error');
-        }
-
     }
 
 
-    public function sessionBasedLogin(){
-        if(isset($_COOKIE["mySession"])){
-
-        }
-
-    }
 
     private function validateUser($input) {
         if (! isset($input['phone'])) {
@@ -156,6 +218,22 @@ class UserController {
         }
         return true;
     }
+
+    public function saveUserObjectInSession($userObj){ /// at the end of each page!!!!
+        if(session_status()==PHP_SESSION_NONE) {
+            session_start();
+        }
+        $_SESSION["userObj"]=serialize($userObj);
+    }
+
+    public function loadUserFromSession(){
+        if(session_status()==PHP_SESSION_NONE) {
+            session_start();
+        }
+        $userObj=unserialize($_SESSION["userObj"]);
+        return $userObj;
+    }
+
 
     private function unprocessableEntityResponse()
     {
@@ -171,5 +249,12 @@ class UserController {
         $response['body'] = null;
         return $response;
     }
+
+
+
+
+
+
+
 
 }
