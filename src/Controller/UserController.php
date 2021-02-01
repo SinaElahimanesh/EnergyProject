@@ -6,7 +6,7 @@ class UserController {
     private $db;
     private $requestMethod;
 
-    public function __construct($requestMethod) {
+    public function __construct($requestMethod=null) {
         $this->db = null;
         $this->requestMethod = $requestMethod;
     }
