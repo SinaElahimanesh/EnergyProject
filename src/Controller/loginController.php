@@ -52,6 +52,14 @@ class loginController
         $userController->saveUserObjectInSession($user);
     }
 
+    public function logout(){
+        if(session_status()==PHP_SESSION_NONE) {
+            session_start();
+        }
+        session_destroy();
+        unset($_COOKIE[session_name()]);
+    }
+
     private function unprocessableEntityResponse()
     {
         $response['status_code_header'] = 'HTTP/1.1 422 Unprocessable Entity';
