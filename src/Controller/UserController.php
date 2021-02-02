@@ -224,6 +224,7 @@ class UserController {
             session_start();
         }
         $_SESSION["userObj"]=serialize($userObj);
+        return session_id();
     }
 
     public function loadUserFromSession(){
