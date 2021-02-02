@@ -6,16 +6,9 @@ class IdeaController {
     private $db;
     private $requestMethod;
 
-
-    private $ideaGateway;
-
-    public function __construct($db, $requestMethod, $ideaId, $ownerId) {
+    public function __construct($db, $requestMethod) {
         $this->db = $db;
         $this->requestMethod = $requestMethod;
-        $this->ideaId = $ideaId;
-        $this->ownerId = $ownerId;
-
-        $this->ideaGateway = new Idea($db);
     }
 
     public function processRequest() {
@@ -49,7 +42,7 @@ class IdeaController {
     }
 
     private function getIdea($id) {
-        $result = $this->ideaGateway->findIdea($id);
+        $result = $this->findIdea($id);
         if (! $result) {
             return $this->notFoundResponse();
         }
@@ -59,7 +52,7 @@ class IdeaController {
     }
 
     private function getAllIdeasOfAUser($id) {
-        $result = $this->ideaGateway->findAllIdeasOfAUser($id);
+        $result = $this->findAllIdeasOfAUser($id);
         if (! $result) {
             return $this->notFoundResponse();
         }
@@ -69,7 +62,7 @@ class IdeaController {
     }
 
     private function getAllIdeas() {
-        $result = $this->ideaGateway->findAllIdeas();
+        $result = $this->findAllIdeas();
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode($result);
         return $response;
@@ -81,14 +74,14 @@ class IdeaController {
         if (! $this->validateIdea($input)) {
             return $this->unprocessableEntityResponse();
         }
-        $this->ideaGateway->insert($input);
+        $this->insert($input);
         $response['status_code_header'] = 'HTTP/1.1 201 Created';
         $response['body'] = null;
         return $response;
     }
 
     private function updateIdeaFromRequest($id) {
-        $result = $this->ideaGateway->findIdea($id);
+        $result = $this->findIdea($id);
         if (! $result) {
             return $this->notFoundResponse();
         }
@@ -97,11 +90,11 @@ class IdeaController {
             return $this->unprocessableEntityResponse();
         }
         if(array_key_exists ( 'expertId' ,  $input )) {
-            $this->ideaGateway->updateExpert($id, $input);
+            $this->updateExpert($id, $input);
         } else if(array_key_exists ( 'extraResources' ,  $input )) {
-            $this->ideaGateway->updateExtraResources($id, $input);
+            $this->updateExtraResources($id, $input);
         } else if(array_key_exists ( 'ideaStatus' ,  $input )) {
-            $this->ideaGateway->updateStatus($id, $input);
+            $this->updateStatus($id, $input);
         }
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = null;
@@ -109,11 +102,11 @@ class IdeaController {
     }
 
     private function deleteIdea($id) {
-        $result = $this->ideaGateway->findIdea($id);
+        $result = $this->findIdea($id);
         if (! $result) {
             return $this->notFoundResponse();
         }
-        $this->ideaGateway->delete($id);
+        $this->delete($id);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = null;
         return $response;
@@ -146,7 +139,8 @@ class IdeaController {
         // find all ideas of all students
         $statement = "SELECT * FROM IDEAS;";
         try {
-            $statement= $this->db->getConnection()->query($statement);
+            $db=new databaseController();
+            $statement= $db->getConnection()->query($statement);
             $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
             return $result;
         } catch (\PDOException $e) {
@@ -158,7 +152,8 @@ class IdeaController {
         // find all ideas of a user with ID $id
         $statement = "SELECT * FROM IDEAS WHERE ownerId=?;";
         try {
-            $statement= $this->db->getConnection()->query($statement);
+            $db=new databaseController();
+            $statement= $db->getConnection()->query($statement);
             $statement->execute(array($id));
             $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
             return $result;
@@ -171,7 +166,8 @@ class IdeaController {
         // find an specific idea of a user
         $statement = "SELECT * FROM IDEAS WHERE ideaId=?;";
         try {
-            $statement= $this->db->getConnection()->query($statement);
+            $db=new databaseController();
+            $statement= $db->getConnection()->query($statement);
             $statement->execute(array($id));
             $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
             return $result;
@@ -186,7 +182,8 @@ class IdeaController {
         $statement = "INSERT INTO PATENTS (idea_name, ownerId, expertId, ideaStatus, description, extraResources)
                     VALUES (:idea_name, :ownerId, :expertId, :ideaStatus, :description, :extraResources);";
         try {
-            $statement = $this->db->getConnection()->prepare($statement);
+            $db=new databaseController();
+            $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
                 'idea_name' => $input['idea_name'],
                 'ownerId' => $input['ownerId'],
@@ -206,7 +203,8 @@ class IdeaController {
                      expertId= :expertId,
                       WHERE id = :id;";
         try {
-            $statement = $this->db->getConnection()->prepare($statement);
+            $db=new databaseController();
+            $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
                 'id' => (int) $id,
                 'expertId' => $input['expertId'],
@@ -223,7 +221,8 @@ class IdeaController {
                      extraResources= :extraResources,
                      WHERE id = :id;";
         try {
-            $statement = $this->db->getConnection()->prepare($statement);
+            $db=new databaseController();
+            $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
                 'id' => (int) $id,
                 'extraResources' => $input['extraResources'],
@@ -240,7 +239,8 @@ class IdeaController {
                      ideaStatus= :ideaStatus,
                       WHERE id = :id;";
         try {
-            $statement = $this->db->getConnection()->prepare($statement);
+            $db=new databaseController();
+            $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
                 'id' => (int) $id,
                 'ideaStatus' => $input['ideaStatus'],
@@ -258,7 +258,8 @@ class IdeaController {
             WHERE id = :id;
         ";
         try {
-            $statement = $this->db->getConnection()->prepare($statement);
+            $db=new databaseController();
+            $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array('id' => $id));
             return $statement->rowCount();
         } catch (\PDOException $e) {

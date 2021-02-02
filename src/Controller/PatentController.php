@@ -48,7 +48,7 @@ class PatentController {
     }
 
     private function getPatent($id) {
-        $result = $this->patentGateway->findPatent($id);
+        $result = $this->findPatent($id);
         if (! $result) {
             return $this->notFoundResponse();
         }
@@ -58,7 +58,7 @@ class PatentController {
     }
 
     private function getAllPatentsOfAUser($id) {
-        $result = $this->patentGateway->findAllPatentsOfAUser($id);
+        $result = $this->findAllPatentsOfAUser($id);
         if (! $result) {
             return $this->notFoundResponse();
         }
@@ -68,7 +68,7 @@ class PatentController {
     }
 
     private function getAllPatents() {
-        $result = $this->patentGateway->findAllPatents();
+        $result = $this->findAllPatents();
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode($result);
         return $response;
@@ -80,14 +80,14 @@ class PatentController {
         if (! $this->validatePatent($input)) {
             return $this->unprocessableEntityResponse();
         }
-        $this->patentGateway->insert($input);
+        $this->insert($input);
         $response['status_code_header'] = 'HTTP/1.1 201 Created';
         $response['body'] = null;
         return $response;
     }
 
     private function updatePatentFromRequest($id) {
-        $result = $this->patentGateway->findPatent($id);
+        $result = $this->findPatent($id);
         if (! $result) {
             return $this->notFoundResponse();
         }
@@ -96,11 +96,11 @@ class PatentController {
             return $this->unprocessableEntityResponse();
         }
         if(array_key_exists ( 'expertId' ,  $input )) {
-            $this->patentGateway->updateExpert($id, $input);
+            $this->updateExpert($id, $input);
         } else if(array_key_exists ( 'extraResources' ,  $input )) {
-            $this->patentGateway->updateExtraResources($id, $input);
+            $this->updateExtraResources($id, $input);
         } else if(array_key_exists ( 'patentStatus' ,  $input )) {
-            $this->patentGateway->updateStatus($id, $input);
+            $this->updateStatus($id, $input);
         }
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = null;
@@ -108,11 +108,11 @@ class PatentController {
     }
 
     private function deletePatent($id) {
-        $result = $this->patentGateway->findPatent($id);
+        $result = $this->findPatent($id);
         if (! $result) {
             return $this->notFoundResponse();
         }
-        $this->patentGateway->delete($id);
+        $this->delete($id);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = null;
         return $response;
@@ -145,7 +145,8 @@ class PatentController {
         // find all patents of all students
         $statement = "SELECT * FROM PATENTS;";
         try {
-            $statement= $this->db->getConnection()->query($statement);
+            $db=new databaseController();
+            $statement= $db->getConnection()->query($statement);
             $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
             return $result;
         } catch (\PDOException $e) {
@@ -157,7 +158,8 @@ class PatentController {
         // find all patents of a user with ID $id
         $statement = "SELECT * FROM PATENTS WHERE ownerId=?;";
         try {
-            $statement= $this->db->getConnection()->query($statement);
+            $db=new databaseController();
+            $statement= $db->getConnection()->query($statement);
             $statement->execute(array($id));
             $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
             return $result;
@@ -170,7 +172,8 @@ class PatentController {
         // find an specific patent of a user
         $statement = "SELECT * FROM PATENTS WHERE patentId=?;";
         try {
-            $statement= $this->db->getConnection()->query($statement);
+            $db=new databaseController();
+            $statement= $db->getConnection()->query($statement);
             $statement->execute(array($id));
             $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
             return $result;
@@ -185,7 +188,8 @@ class PatentController {
         $statement = "INSERT INTO PATENTS (patent_name, ownerId, expertId, patentStatus, description, extraResources)
                     VALUES (:patent_name, :ownerId, :expertId, :patentStatus, :description, :extraResources);";
         try {
-            $statement = $this->db->getConnection()->prepare($statement);
+            $db=new databaseController();
+            $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
                 'patent_name' => $input['patent_name'],
                 'ownerId' => $input['ownerId'],
@@ -205,7 +209,8 @@ class PatentController {
                      expertId= :expertId,
                      WHERE id = :id;";
         try {
-            $statement = $this->db->getConnection()->prepare($statement);
+            $db=new databaseController();
+            $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
                 'id' => (int) $id,
                 'expertId' => $input['expertId'],
@@ -222,7 +227,8 @@ class PatentController {
                      extraResources= :extraResources,
                      WHERE id = :id;";
         try {
-            $statement = $this->db->getConnection()->prepare($statement);
+            $db=new databaseController();
+            $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
                 'id' => (int) $id,
                 'extraResources' => $input['extraResources'],
@@ -239,7 +245,8 @@ class PatentController {
                      patentStatus= :patentStatus,
                      WHERE id = :id;";
         try {
-            $statement = $this->db->getConnection()->prepare($statement);
+            $db=new databaseController();
+            $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
                 'id' => (int) $id,
                 'patentStatus' => $input['patentStatus'],
@@ -257,7 +264,8 @@ class PatentController {
             WHERE id = :id;
         ";
         try {
-            $statement = $this->db->getConnection()->prepare($statement);
+            $db=new databaseController();
+            $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array('id' => $id));
             return $statement->rowCount();
         } catch (\PDOException $e) {
