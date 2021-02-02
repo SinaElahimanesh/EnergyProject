@@ -56,6 +56,10 @@ class loginController
         if(session_status()==PHP_SESSION_NONE) {
             session_start();
         }
+        $sessionId=session_id();
+        $db=new databaseController();
+        $statement="DELETE FROM `users_sessions` WHERE `sessionId`=$sessionId";
+        $db->getConnection()->exec($statement);
         session_destroy();
         unset($_COOKIE[session_name()]);
     }
