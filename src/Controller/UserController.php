@@ -1,8 +1,8 @@
 <?php
 
+header("Content-Type: application/json; charset=UTF-8");
 
 class UserController {
-
     private $requestMethod;
     private $userId;
     public function __construct($requestMethod,$userId=null) {
@@ -249,14 +249,5 @@ class UserController {
         $response['body'] = null;
         return $response;
     }
-
-
-
-
-
-
-
-
-
-
 }
+

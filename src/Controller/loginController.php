@@ -1,5 +1,5 @@
 <?php
-
+header("Content-Type: application/json; charset=UTF-8");
 
 class loginController
 {
@@ -15,9 +15,7 @@ class loginController
 
     public function processRequest(){
         switch ($this->requestMethod) {
-            case "GET":
-                $response = $this->validateUser($this->expectedClientType);
-                break;
+
             case "POST":
                 $response=$this->login();
                 break;
@@ -60,7 +58,7 @@ class loginController
         return $response;
     }
 
-    private function validateUser($expectedClientType){
+    public function validateUser($expectedClientType){
         $userController=new UserController();
         $client=$userController->loadUserFromSession();
         if($expectedClientType!=$client->type) {
@@ -78,7 +76,7 @@ class loginController
     ///// tu har pagi bayas estefade she!
     private function sessionBasedLogin(){ /// inja bayad bad az ye hafte user ru part kone biron va redirect kone safhe login!
            if(isset($_COOKIE[session_name()])==false){
-               return $this->notFoundResponse();
+               return false;
            }
         $sessionId=$_COOKIE[session_name()];
         $db=new databaseController();
@@ -88,7 +86,7 @@ class loginController
             if(time()-$result["loginTime"]>604800){
                 $statement="DELETE FROM `users_sessions` WHERE `sessionId`=$sessionId";
                 $db->getConnection()->exec($statement);
-                return $this->unprocessableEntityResponse();
+                return false;
             }
         $userController=new UserController();
         $user=$userController->loadUserFromSession();
