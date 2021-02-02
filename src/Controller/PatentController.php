@@ -3,18 +3,14 @@
 
 class PatentController {
 
-    private $db;
     private $requestMethod;
+    private $patentId;
+    private $ownerId;
 
-    private $patentGateway;
-
-    public function __construct($db, $requestMethod, $patentId, $ownerId) {
-        $this->db = $db;
+    public function __construct($requestMethod, $patentId, $ownerId) {
         $this->requestMethod = $requestMethod;
         $this->patentId = $patentId;
         $this->ownerId = $ownerId;
-
-        $this->patentGateway = new Patent($db);
     }
 
     public function processRequest() {

@@ -4,11 +4,37 @@
 class loginController
 {
 
-    public function __construct()
+
+    private $requestMethod;
+    private $expectedClientType;
+    public function __construct($requestMethod,$expectedClientType=null)
     {
+        $this->requestMethod=$requestMethod;
+        $this->expectedClientType=$expectedClientType;
     }
 
-    public function login(){ //// login normal az tarighe safhe adi!
+    public function processRequest(){
+        switch ($this->requestMethod) {
+            case "GET":
+                $response = $this->validateUser($this->expectedClientType);
+                break;
+            case "POST":
+                $response=$this->login();
+                break;
+            case "DELETE":
+                $response=$this->logout();
+                break;
+            default:
+                $response = $this->notFoundResponse();
+                break;
+        }
+        header($response['status_code_header']);
+        if($response['body']) {
+            echo $response['body'];
+        }
+    }
+
+    private function login(){ //// login normal az tarighe safhe adi!
         $input = (array) json_decode(file_get_contents('php://input'), TRUE);
         $phone=$input["phone"];
         $password=$input["password"];
@@ -29,10 +55,28 @@ class loginController
         $db=new databaseController();
         $db->getConnection()->query("REPLACE INTO `users_sessions` (`sessionId`,`accountId`,`loginTime`) VALUES
         ($sessionId,$accountId,$current_time)");
+        $response['status_code_header'] = 'HTTP/1.1 200 logged In';
+        $response['body'] = null;
+        return $response;
     }
 
+    private function validateUser($expectedClientType){
+        $userController=new UserController();
+        $client=$userController->loadUserFromSession();
+        if($expectedClientType!=$client->type) {
+            return $this->unprocessableEntityResponse();
+        }
+        $result=$this->sessionBasedLogin();
+        if($result!=true){
+            return $result;
+        }
+        $response['status_code_header'] = 'HTTP/1.1 200 User is Valid';
+        $response['body'] = null;
+        return $response;
+    }
 
-    public function sessionBasedLogin(){ /// inja bayad bad az ye hafte user ru part kone biron va redirect kone safhe login!
+    ///// tu har pagi bayas estefade she!
+    private function sessionBasedLogin(){ /// inja bayad bad az ye hafte user ru part kone biron va redirect kone safhe login!
            if(isset($_COOKIE[session_name()])==false){
                return $this->notFoundResponse();
            }
@@ -50,9 +94,10 @@ class loginController
         $user=$userController->loadUserFromSession();
         $user->setAuthenticated(1);
         $userController->saveUserObjectInSession($user);
+        return true;
     }
 
-    public function logout(){
+    private function logout(){
         if(session_status()==PHP_SESSION_NONE) {
             session_start();
         }
@@ -62,7 +107,12 @@ class loginController
         $db->getConnection()->exec($statement);
         session_destroy();
         unset($_COOKIE[session_name()]);
+        $response['status_code_header'] = 'HTTP/1.1 200 logged Out';
+        $response['body'] = null;
+        return $response;
     }
+
+
 
     private function unprocessableEntityResponse()
     {

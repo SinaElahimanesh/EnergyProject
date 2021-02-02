@@ -3,12 +3,11 @@
 
 class UserController {
 
-    private $db;
     private $requestMethod;
-
-    public function __construct($requestMethod=null) {
-        $this->db = null;
+    private $userId;
+    public function __construct($requestMethod,$userId=null) {
         $this->requestMethod = $requestMethod;
+        $this->userId=$userId;
     }
 
     public function processRequest() {
@@ -250,6 +249,8 @@ class UserController {
         $response['body'] = null;
         return $response;
     }
+
+
 
 
 

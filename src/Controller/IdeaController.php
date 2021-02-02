@@ -3,12 +3,13 @@
 
 class IdeaController {
 
-    private $db;
     private $requestMethod;
-
-    public function __construct($db, $requestMethod) {
-        $this->db = $db;
+    private $ideaId;
+    private $ownerId;
+    public function __construct($requestMethod,$ownerId,$ideaId) {
         $this->requestMethod = $requestMethod;
+        $this->ownerId=$ownerId;
+        $this->ideaId=$ideaId;
     }
 
     public function processRequest() {
