@@ -6,11 +6,9 @@ class loginController
 
 
     private $requestMethod;
-    private $expectedClientType;
-    public function __construct($requestMethod,$expectedClientType=null)
+    public function __construct($requestMethod)
     {
         $this->requestMethod=$requestMethod;
-        $this->expectedClientType=$expectedClientType;
     }
 
     public function processRequest(){
@@ -53,7 +51,7 @@ class loginController
         $db=new databaseController();
         $db->getConnection()->query("REPLACE INTO `users_sessions` (`sessionId`,`accountId`,`loginTime`) VALUES
         ($sessionId,$accountId,$current_time)");
-        $response['status_code_header'] = 'HTTP/1.1 200 logged In';
+        $response['status_code_header'] = 'HTTP/1.1 200 ok';
         $response['body'] = null;
         return $response;
     }
@@ -86,7 +84,7 @@ class loginController
         $db->getConnection()->exec($statement);
         session_destroy();
         unset($_COOKIE[session_name()]);
-        $response['status_code_header'] = 'HTTP/1.1 200 logged Out';
+        $response['status_code_header'] = 'HTTP/1.1 200 ok';
         $response['body'] = null;
         return $response;
     }

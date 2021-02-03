@@ -13,7 +13,7 @@ $requestedMethod=$_SERVER["REQUEST_METHOD"];
 
 $user=sessionBasedLogin();
 if($user==false) {
-    header("Location:  ");///// url to login page!!!
+    header("Location: example.com/login ");///// url to login page!!!
     die();
 }
 
@@ -105,6 +105,17 @@ elseif ($uri[1]=="Patent"){
 
     }
 
+}elseif($uri[1]=="auth"){
+    $loginController=null;
+    if($requestedMethod=="POST"){
+        $loginController=new loginController("POST");
+    }elseif($requestedMethod="DELETE"){
+        $loginController=new loginController("DELETE");
+    }else{
+        die();
+    }
+}else{
+    die();
 }
 
 
