@@ -1,9 +1,10 @@
 <?php
 
-
-
+require_once("UserController.php");
+require_once ("loginController.php");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE");
+
 
 
 parse_str(parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY), $queries);
@@ -13,21 +14,21 @@ $requestedMethod=$_SERVER["REQUEST_METHOD"];
 
 $user=sessionBasedLogin();
 if($user==false) {
-    header("Location: example.com/login ");///// url to login page!!!
+    header("Location:");///// url to login page!!!
     die();
 }
 
 /// the type of user now is in the $user->type!
 /// in each if you must compare the authorized user type with $user->type!
 
-if($uri[1]=="User"){
+if($uri[5]=="User"){
     $userController=null;
     if($requestedMethod=="POST"){
         $userController=new UserController("POST");
     }
     elseif ($requestedMethod=="GET"){
-        if(isset($uri[2])){
-            $userController=new UserController("GET",$uri[2]);
+        if(isset($uri[6])){
+            $userController=new UserController("GET",$uri[6]);
         }else{
             $userController=new UserController("GET");
         }
@@ -41,7 +42,7 @@ if($uri[1]=="User"){
     }
     $userController->processRequest();
 }
-elseif($uri[1]=="Idea"){
+elseif($uri[5]=="Idea"){
     $ideaController=null;
     if($requestedMethod=="POST"){
         $ideaController=new IdeaController("POST");
@@ -66,7 +67,7 @@ elseif($uri[1]=="Idea"){
     $ideaController->processRequest();
 
 }
-elseif ($uri[1]=="Patent"){
+elseif ($uri[5]=="Patent"){
     $patentController=null;
     if($requestedMethod=="POST"){
         $patentController=new PatentController("POST");
@@ -93,19 +94,7 @@ elseif ($uri[1]=="Patent"){
     }
     $patentController->processRequest();
 
-}elseif ($uri[1]=="message"){
-    $messageController=null;
-    if($requestedMethod=="POST"){
-
-    }elseif($requestedMethod=="GET"){
-
-    }elseif ($requestedMethod=="PUT"){
-
-    }elseif ($requestedMethod=="DELETE"){
-
-    }
-
-}elseif($uri[1]=="auth"){
+}elseif($uri[5]=="auth"){
     $loginController=null;
     if($requestedMethod=="POST"){
         $loginController=new loginController("POST");
@@ -114,6 +103,9 @@ elseif ($uri[1]=="Patent"){
     }else{
         die();
     }
+
+    $loginController->processRequest();
+
 }else{
     die();
 }
@@ -125,15 +117,16 @@ elseif ($uri[1]=="Patent"){
     }
     $sessionId=$_COOKIE[session_name()];
     $db=new databaseController();
-    $statement=$db->getConnection()->prepare("SELECT `loginTime` FROM `users_sessions` WHERE `sessionId`=$sessionId");
-    $statement->execute();
-    $result = $statement->setFetchMode(PDO::FETCH_ASSOC);
-    if(time()-$result["loginTime"]>604800){
-        $statement="DELETE FROM `users_sessions` WHERE `sessionId`=$sessionId";
-        $db->getConnection()->exec($statement);
+    $statement=$db->getConnection()->prepare("SELECT `login_time` FROM `users_sessions` WHERE `sessionId`=:sessionId");
+    $statement->execute(array(':sessionId' => "$sessionId"));
+    $result = $statement->fetch(PDO::FETCH_ASSOC);
+    $result["login_time"]=strtotime($result["login_time"]);
+    if(time()-$result["login_time"]>604800){
+        $statement="DELETE FROM `users_sessions` WHERE `sessionId`=:sessionId";
+        $db->getConnection()->exec(array($statement));
         return false;
     }
-    $userController=new UserController();
+    $userController=new UserController(null,null);
     $user=$userController->loadUserFromSession();
     $user->setAuthenticated(1);
     $userController->saveUserObjectInSession($user);

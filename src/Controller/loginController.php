@@ -1,4 +1,7 @@
 <?php
+require_once ("databaseController.php");
+require_once ("UserController.php");
+require_once ("../Model/User.php");
 header("Content-Type: application/json; charset=UTF-8");
 
 class loginController
@@ -32,9 +35,9 @@ class loginController
 
     private function login(){ //// login normal az tarighe safhe adi!
         $input = (array) json_decode(file_get_contents('php://input'), TRUE);
-        $phone=$input["phone"];
+        $phone=$input["phoneNum"];
         $password=$input["password"];
-        $userController=new UserController();
+        $userController=new UserController(null,null);
         $result=$userController->getUserByPhoneNumber($phone);
         if(count($result)==0) {
           return  $this->notFoundResponse();
@@ -44,13 +47,17 @@ class loginController
         }
         $user=new User($result["accountId"],$result["type"],$result["enabled"],1);
         $accountId=$result["accountId"];
-        $current_time=time();
+        //$current_time=time();
         $lifetime=604800;
         session_set_cookie_params($lifetime);
         $sessionId=$userController->saveUserObjectInSession($user);
         $db=new databaseController();
-        $db->getConnection()->query("REPLACE INTO `users_sessions` (`sessionId`,`accountId`,`loginTime`) VALUES
-        ($sessionId,$accountId,$current_time)");
+        $statement="INSERT INTO `users_sessions` (`sessionId`,`accountId`) VALUES (:sessionId,:accountId)";
+        $statement=$db->getConnection()->prepare($statement);
+        $statement->execute(array(
+            'sessionId' => $sessionId,
+            'accountId' => $accountId
+        ));
         $response['status_code_header'] = 'HTTP/1.1 200 ok';
         $response['body'] = null;
         return $response;

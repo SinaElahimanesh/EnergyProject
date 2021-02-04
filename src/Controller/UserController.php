@@ -1,4 +1,5 @@
 <?php
+require_once ("databaseController.php");
 
 header("Content-Type: application/json; charset=UTF-8");
 
@@ -47,14 +48,14 @@ class UserController {
 
 
     public function getUserByPhoneNumber($phoneNumber){
-        $statement = "SELECT `accountId,password,enabled,type` FROM users WHERE `phoneNum`=?";
+        $statement = "SELECT `accountId`,`password`,`enabled`,`type` FROM `users` WHERE `phoneNum`=$phoneNumber";
         try {
             $db=new databaseController();
             $statement = $db->getConnection()->prepare($statement);
             $statement->execute();
-            $result=$statement->setFetchMode(PDO::FETCH_ASSOC);
+            $result=$statement->fetch(PDO::FETCH_ASSOC);
             if(count($result)==0) return null;
-            return $result;
+            return ($result);
         }catch (\PDOException $e){
             exit($e->getMessage());
         }
@@ -100,13 +101,13 @@ class UserController {
 
         // insert a user to databaseController
         $db=new databaseController();
-        $statement = "INSERT INTO USERS (user_name, phone, password, email, nationalCode, address, residence, schoolName)
-                    VALUES (:user_name, :phone, :password, :email, :nationalCode, :address, :residence, :schoolName);";
+        $statement = "INSERT INTO USERS (phoneNum, password,fullname)
+                    VALUES (:phoneNum, :password,:fullname);";
         try {
             $input["password"]=password_hash($db->makeSafe($input["password"]),PASSWORD_DEFAULT);
             $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
-                'phone' => $input['phone'],
+                'phoneNum' => $input['phoneNum'],
                 'password' => $input['password'],
                 'fullname' => $input['fullname']
             ));
@@ -209,7 +210,7 @@ class UserController {
 
 
     private function validateUser($input) {
-        if (! isset($input['phone'])) {
+        if (! isset($input['phoneNum'])) {
             return false;
         }
         if (! isset($input['password'])) {
