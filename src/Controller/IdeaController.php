@@ -195,13 +195,14 @@ class IdeaController {
     private function insert(Array $input) {
 
         // insert an idea to databaseController
-        $statement = "INSERT INTO PATENTS (idea_name, ownerId, expertId, ideaStatus, description, extraResources)
-                    VALUES (:idea_name, :ownerId, :expertId, :ideaStatus, :description, :extraResources);";
+        $statement = "INSERT INTO IDEAS (idea_id,idea_name,ownerId, expertId, ideaStatus, description, extraResources)
+                    VALUES (:idea_id,:idea_name, :ownerId, :expertId, :ideaStatus, :description, :extraResources);";
         try {
             $db=new databaseController();
             $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
                 'idea_id' => $input['idea_id'],
+                'idea_name'=>$input['idea_name'],
                 'ownerId' => $input['ownerId'],
                 'ideaStatus' => 'START',
                 'description' => $input['description'],

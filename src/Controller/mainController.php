@@ -22,8 +22,7 @@ if($user==false) {
     }
 }
 
-/// the type of user now is in the $user->type!
-/// in each if you must compare the authorized user type with $user->type!
+
 
 if($uri[5]=="User"){
     $userController=null;

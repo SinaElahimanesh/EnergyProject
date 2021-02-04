@@ -195,13 +195,14 @@ class PatentController {
     private function insert(Array $input) {
 
         // insert a patent to databaseController
-        $statement = "INSERT INTO PATENTS (patent_name, ownerId, expertId, patentStatus, description, extraResources)
-                    VALUES (:patent_name, :ownerId, :expertId, :patentStatus, :description, :extraResources);";
+        $statement = "INSERT INTO PATENTS (patent_id,patent_name, ownerId, expertId, patentStatus, description, extraResources)
+                    VALUES (:patent_id,:patent_name ,:ownerId, :expertId, :patentStatus, :description, :extraResources);";
         try {
             $db=new databaseController();
             $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
                 'patent_id' => $input['patent_id'],
+                'patent_name'=>$input['patent_name'],
                 'ownerId' => $input['ownerId'],
                 'patentStatus' => 'START',
                 'description' => $input['description'],
