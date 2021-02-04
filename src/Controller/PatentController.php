@@ -1,4 +1,5 @@
 <?php
+require_once ("../Model/User.php");
 header("Content-Type: application/json; charset=UTF-8");
 
 class PatentController {
@@ -6,11 +7,12 @@ class PatentController {
     private $requestMethod;
     private $patentId;
     private $ownerId;
-
-    public function __construct($requestMethod, $patentId, $ownerId) {
+    private $currentUser;
+    public function __construct($requestMethod, $patentId, $ownerId,$currentUser=null) {
         $this->requestMethod = $requestMethod;
         $this->patentId = $patentId;
         $this->ownerId = $ownerId;
+        $this->currentUser=$currentUser;
     }
 
     public function processRequest() {
@@ -48,6 +50,9 @@ class PatentController {
         if (! $result) {
             return $this->notFoundResponse();
         }
+        if($this->currentUser->getType()=="Student" && $result["ownerId"]!=$this->currentUser->getUserId()){
+            return $this->unprocessableEntityResponse();
+        }
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode($result);
         return $response;
@@ -58,12 +63,18 @@ class PatentController {
         if (! $result) {
             return $this->notFoundResponse();
         }
+        if($this->currentUser->getType()=="Student" && $id!=$this->currentUser->getUserId()){
+            return $this->unprocessableEntityResponse();
+        }
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode($result);
         return $response;
     }
 
     private function getAllPatents() {
+        if($this->currentUser->getType()=="Student"){
+            return $this->unprocessableEntityResponse();
+        }
         $result = $this->findAllPatents();
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode($result);
@@ -107,6 +118,9 @@ class PatentController {
         $result = $this->findPatent($id);
         if (! $result) {
             return $this->notFoundResponse();
+        }
+        if($this->currentUser->getType()=="Student" && $result["ownerId"]!=$this->currentUser->getUserId()){
+            return $this->unprocessableEntityResponse();
         }
         $this->delete($id);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
@@ -187,7 +201,7 @@ class PatentController {
             $db=new databaseController();
             $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
-                'patent_name' => $input['patent_name'],
+                'patent_id' => $input['patent_id'],
                 'ownerId' => $input['ownerId'],
                 'patentStatus' => 'START',
                 'description' => $input['description'],

@@ -1,4 +1,5 @@
 <?php
+require_once ("../Model/User.php");
 header("Content-Type: application/json; charset=UTF-8");
 
 class IdeaController {
@@ -6,10 +7,12 @@ class IdeaController {
     private $requestMethod;
     private $ideaId;
     private $ownerId;
-    public function __construct($requestMethod,$ownerId,$ideaId) {
+    private $currentUser;
+    public function __construct($requestMethod,$ownerId,$ideaId,$currentUser=null) {
         $this->requestMethod = $requestMethod;
         $this->ownerId=$ownerId;
         $this->ideaId=$ideaId;
+        $this->currentUser=$currentUser;
     }
 
     public function processRequest() {
@@ -47,6 +50,9 @@ class IdeaController {
         if (! $result) {
             return $this->notFoundResponse();
         }
+        if($this->currentUser->getType()=="Student" && $result["ownerId"]!=$this->currentUser->getUserId()){
+            return $this->unprocessableEntityResponse();
+        }
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode($result);
         return $response;
@@ -57,12 +63,18 @@ class IdeaController {
         if (! $result) {
             return $this->notFoundResponse();
         }
+        if($this->currentUser->getType()=="Student" && $id!=$this->currentUser->getUserId()){
+            return $this->unprocessableEntityResponse();
+        }
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode($result);
         return $response;
     }
 
     private function getAllIdeas() {
+        if($this->currentUser->getType()=="Student"){
+            return $this->unprocessableEntityResponse();
+        }
         $result = $this->findAllIdeas();
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode($result);
@@ -106,6 +118,9 @@ class IdeaController {
         $result = $this->findIdea($id);
         if (! $result) {
             return $this->notFoundResponse();
+        }
+        if($this->currentUser->getType()=="Student" && $result["ownerId"]!=$this->currentUser->getUserId()){
+            return $this->unprocessableEntityResponse();
         }
         $this->delete($id);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
@@ -186,7 +201,7 @@ class IdeaController {
             $db=new databaseController();
             $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
-                'idea_name' => $input['idea_name'],
+                'idea_id' => $input['idea_id'],
                 'ownerId' => $input['ownerId'],
                 'ideaStatus' => 'START',
                 'description' => $input['description'],

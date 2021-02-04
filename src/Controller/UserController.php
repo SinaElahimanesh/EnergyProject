@@ -1,14 +1,16 @@
 <?php
 require_once ("databaseController.php");
-
+require_once ("../Model/User.php");
 header("Content-Type: application/json; charset=UTF-8");
 
 class UserController {
     private $requestMethod;
     private $userId;
-    public function __construct($requestMethod,$userId=null) {
+    private $currentUser;
+    public function __construct($requestMethod,$userId=null,$currentUser=null) {
         $this->requestMethod = $requestMethod;
         $this->userId=$userId;
+        $this->currentUser=$currentUser;
     }
 
     public function processRequest() {
@@ -40,6 +42,9 @@ class UserController {
     }
 
     private function getAllUsers() {
+        if($this->currentUser->getType()=="Student"){
+            return $this->unprocessableEntityResponse();
+        }
         $result = $this->findAll();
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode($result);
@@ -66,6 +71,9 @@ class UserController {
         $result = $this->findUser($id);
         if (! $result) {
             return $this->notFoundResponse();
+        }
+        if($this->currentUser->getType()=="Student" && $id!=$this->currentUser->getUserId()){
+            return $this->unprocessableEntityResponse();
         }
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode($result);
@@ -167,6 +175,9 @@ class UserController {
 
 
     private function deleteUser($id) {
+        if($this->currentUser->getType()=="Student"){
+            return $this->unprocessableEntityResponse();
+        }
         $result = $this->findUser($id);
         if (! $result) {
             return $this->notFoundResponse();
@@ -216,6 +227,10 @@ class UserController {
         if (! isset($input['password'])) {
             return false;
         }
+        if (! isset($input['fullname'])) {
+            return false;
+        }
+
         return true;
     }
 
