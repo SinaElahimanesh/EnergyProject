@@ -8,7 +8,7 @@ class IdeaController {
     private $ideaId;
     private $ownerId;
     private $currentUser;
-    public function __construct($requestMethod,$ownerId,$ideaId,$currentUser=null) {
+    public function __construct($requestMethod,$ownerId=null,$ideaId=null,$currentUser=null) {
         $this->requestMethod = $requestMethod;
         $this->ownerId=$ownerId;
         $this->ideaId=$ideaId;
@@ -75,6 +75,9 @@ class IdeaController {
         if($this->currentUser->getType()=="Student"){
             return $this->unprocessableEntityResponse();
         }
+        if($this->currentUser->getType()=="Student"){
+            return $this->unprocessableEntityResponse();
+        }
         $result = $this->findAllIdeas();
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode($result);
@@ -84,7 +87,7 @@ class IdeaController {
 
     private function createIdeaFromRequest() {
         $input = (array) json_decode(file_get_contents('php://input'), TRUE);
-        if (! $this->validateIdea($input)) {
+        if (! $this->validateIdeaForInsertion($input)) {
             return $this->unprocessableEntityResponse();
         }
         $this->insert($input);
@@ -99,9 +102,10 @@ class IdeaController {
             return $this->notFoundResponse();
         }
         $input = (array) json_decode(file_get_contents('php://input'), TRUE);
-        if (! $this->validateIdea($input)) {
+        if (! $this->validateIdeaForUpdation($input)) {
             return $this->unprocessableEntityResponse();
         }
+
         if(array_key_exists ( 'expertId' ,  $input )) {
             $this->updateExpert($id, $input);
         } else if(array_key_exists ( 'extraResources' ,  $input )) {
@@ -128,11 +132,16 @@ class IdeaController {
         return $response;
     }
 
-    private function validateIdea($input) {
-        if (! isset($input['id'])) {
+    private function validateIdeaForInsertion($input) {
+        if (!isset($input['idea_name']) || !isset($input["ownerId"]) || !isset($input["description"])
+        || !isset($input["extraResources"]) ) {
             return false;
         }
         return true;
+    }
+    private function validateIdeaForUpdation($input){
+        if(isset($input["expertId"])|| isset($input["extraResources"])|| isset($input["ideaStatus"])) return true;
+        return false;
     }
 
     private function unprocessableEntityResponse()
@@ -180,10 +189,10 @@ class IdeaController {
 
     private function findIdea($id) {
         // find an specific idea of a user
-        $statement = "SELECT * FROM IDEAS WHERE ideaId=?;";
+        $statement = "SELECT * FROM IDEAS WHERE idea_id=?;";
         try {
             $db=new databaseController();
-            $statement= $db->getConnection()->query($statement);
+            $statement= $db->getConnection()->prepare($statement);
             $statement->execute(array($id));
             $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
             return $result;
@@ -195,13 +204,12 @@ class IdeaController {
     private function insert(Array $input) {
 
         // insert an idea to databaseController
-        $statement = "INSERT INTO IDEAS (idea_id,idea_name,ownerId, expertId, ideaStatus, description, extraResources)
-                    VALUES (:idea_id,:idea_name, :ownerId, :expertId, :ideaStatus, :description, :extraResources);";
+        $statement = "INSERT INTO IDEAS (idea_name,ownerId,ideaStatus,description, extraResources)
+                    VALUES (:idea_name, :ownerId,:ideaStatus ,:description, :extraResources);";
         try {
             $db=new databaseController();
             $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
-                'idea_id' => $input['idea_id'],
                 'idea_name'=>$input['idea_name'],
                 'ownerId' => $input['ownerId'],
                 'ideaStatus' => 'START',
@@ -217,16 +225,15 @@ class IdeaController {
     private function updateExpert($id, Array $input) {
         // update idea's data (EXPERT)
         $statement = "UPDATE IDEAS SET 
-                     expertId= :expertId,
-                      WHERE idea_id = :idea_id;";
+                      `expertId`= :expertId 
+                      WHERE idea_id = $id;";
         try {
             $db=new databaseController();
             $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
-                'idea_id' => (int) $id,
                 'expertId' => $input['expertId'],
             ));
-            return $statement->rowCount();
+           // return $statement->rowCount();
         } catch (\PDOException $e) {
             exit($e->getMessage());
         }
@@ -235,13 +242,12 @@ class IdeaController {
     private function updateExtraResources($id, Array $input) {
         // update idea's data (EXTRA_RESOURCES)
         $statement = "UPDATE IDEAS SET 
-                     extraResources= :extraResources,
-                     WHERE idea_id = :idea_id;";
+                     extraResources= :extraResources
+                     WHERE idea_id = '$id';";
         try {
             $db=new databaseController();
             $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
-                'idea_id' => (int) $id,
                 'extraResources' => $input['extraResources'],
             ));
             return $statement->rowCount();
@@ -253,13 +259,12 @@ class IdeaController {
     private function updateStatus($id, Array $input) {
         // update idea's data (IDEA_STATUS)
         $statement = "UPDATE IDEAS SET 
-                     ideaStatus= :ideaStatus,
-                      WHERE id = :id;";
+                     ideaStatus= :ideaStatus
+                      WHERE idea_id = '$id';";
         try {
             $db=new databaseController();
             $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
-                'idea_id' => (int) $id,
                 'ideaStatus' => $input['ideaStatus'],
             ));
             return $statement->rowCount();

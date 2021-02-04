@@ -75,6 +75,9 @@ class PatentController {
         if($this->currentUser->getType()=="Student"){
             return $this->unprocessableEntityResponse();
         }
+        if($this->currentUser->getType()=="Student"){
+            return $this->unprocessableEntityResponse();
+        }
         $result = $this->findAllPatents();
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode($result);

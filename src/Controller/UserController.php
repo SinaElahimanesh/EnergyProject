@@ -45,6 +45,9 @@ class UserController {
         if($this->currentUser->getType()=="Student"){
             return $this->unprocessableEntityResponse();
         }
+        if($this->currentUser->getType()=="Student"){
+            return $this->unprocessableEntityResponse();
+        }
         $result = $this->findAll();
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode($result);
@@ -96,7 +99,7 @@ class UserController {
 
     private function createUserFromRequest() {
         $input = (array) json_decode(file_get_contents('php://input'), TRUE);
-        if (! $this->validateUser($input)) {
+        if (! $this->validateUserForRegister($input)) {
             return $this->unprocessableEntityResponse();
         }
         $this->insert($input);
@@ -132,7 +135,7 @@ class UserController {
             return $this->notFoundResponse();
         }
         $input = (array) json_decode(file_get_contents('php://input'), TRUE);
-        if (! $this->validateUser($input)) {
+        if (! $this->validateUserForUpdate($input)) {
             return $this->unprocessableEntityResponse();
         }
         $this->update($id, $input);
@@ -153,18 +156,16 @@ class UserController {
                      residence= :residence,
                      schoolName= :schoolName,
                      enabled= :enabled
-                     WHERE id = :id;";
+                     WHERE accountId = '$id';";
         try {
             $db=new databaseController();
             $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
-                'id' => (int) $id,
                 'email' => $input['email'],
                 'nationalCode' => $input['nationalCode'],
                 'address' => $input['address'],
                 'residence' => $input['residence'],
                 'schoolName' => $input['schoolName'],
-                'fullname'   => $input["fullname"],
                 'enabled' => 1
             ));
             return $statement->rowCount();
@@ -192,13 +193,12 @@ class UserController {
         // delete a user
         $statement = "
             DELETE FROM USERS
-            WHERE id = :id;
+            WHERE accountId = '$id';
         ";
         try {
             $db=new databaseController();
-            $statement = $db->getConnection()->prepare($statement);
-            $statement->execute(array('id' => $id));
-            return $statement->rowCount();
+            $statement = $db->getConnection()->exec($statement);
+            //$statement->execute(array('accountId' => $id));
         } catch (\PDOException $e) {
             exit($e->getMessage());
         }
@@ -218,9 +218,16 @@ class UserController {
         }
     }
 
+    private function validateUserForUpdate($input){
+        if(!isset($input['email']) || !isset($input['nationalCode']) || !isset($input['address'])
+        || !isset($input['residence']) || !isset($input['schoolName']) ){
+            return false;
+        }
+        return true;
+    }
 
 
-    private function validateUser($input) {
+    private function validateUserForRegister($input) {
         if (! isset($input['phoneNum'])) {
             return false;
         }
