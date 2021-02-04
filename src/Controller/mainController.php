@@ -33,7 +33,7 @@ if($uri[5]=="User"){
         if(isset($uri[6])){
             $userController=new UserController("GET",$uri[6],$user);
         }else{
-            $userController=new UserController("GET",$user);
+            $userController=new UserController("GET",null,$user);
         }
 
     }elseif ($requestedMethod=="PUT" && isset($uri[2])){

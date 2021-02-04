@@ -218,12 +218,12 @@ class IdeaController {
         // update idea's data (EXPERT)
         $statement = "UPDATE IDEAS SET 
                      expertId= :expertId,
-                      WHERE id = :id;";
+                      WHERE idea_id = :idea_id;";
         try {
             $db=new databaseController();
             $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
-                'id' => (int) $id,
+                'idea_id' => (int) $id,
                 'expertId' => $input['expertId'],
             ));
             return $statement->rowCount();
@@ -236,12 +236,12 @@ class IdeaController {
         // update idea's data (EXTRA_RESOURCES)
         $statement = "UPDATE IDEAS SET 
                      extraResources= :extraResources,
-                     WHERE id = :id;";
+                     WHERE idea_id = :idea_id;";
         try {
             $db=new databaseController();
             $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
-                'id' => (int) $id,
+                'idea_id' => (int) $id,
                 'extraResources' => $input['extraResources'],
             ));
             return $statement->rowCount();
@@ -259,7 +259,7 @@ class IdeaController {
             $db=new databaseController();
             $statement = $db->getConnection()->prepare($statement);
             $statement->execute(array(
-                'id' => (int) $id,
+                'idea_id' => (int) $id,
                 'ideaStatus' => $input['ideaStatus'],
             ));
             return $statement->rowCount();
