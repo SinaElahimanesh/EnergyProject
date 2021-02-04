@@ -12,10 +12,13 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = explode( '/', $uri );
 $requestedMethod=$_SERVER["REQUEST_METHOD"];
 
-$user=sessionBasedLogin();
+$user=loginController::sessionBasedLogin();
 if($user==false) {
-    header("Location:");///// url to login page!!!
-    die();
+    if((($uri[5]=="User" || $uri[5]=="auth") && $requestedMethod=="POST")==false) {
+        //header("Location:");///// url to login page!!!
+        echo "hoghe!";
+        die();
+    }
 }
 
 /// the type of user now is in the $user->type!
@@ -111,27 +114,7 @@ elseif ($uri[5]=="Patent"){
 }
 
 
-  function sessionBasedLogin(){ /// inja bayad bad az ye hafte user ru part kone biron va redirect kone safhe login!
-    if(isset($_COOKIE[session_name()])==false){
-        return false;
-    }
-    $sessionId=$_COOKIE[session_name()];
-    $db=new databaseController();
-    $statement=$db->getConnection()->prepare("SELECT `login_time` FROM `users_sessions` WHERE `sessionId`=:sessionId");
-    $statement->execute(array(':sessionId' => "$sessionId"));
-    $result = $statement->fetch(PDO::FETCH_ASSOC);
-    $result["login_time"]=strtotime($result["login_time"]);
-    if(time()-$result["login_time"]>604800){
-        $statement="DELETE FROM `users_sessions` WHERE `sessionId`=:sessionId";
-        $db->getConnection()->exec(array($statement));
-        return false;
-    }
-    $userController=new UserController(null,null);
-    $user=$userController->loadUserFromSession();
-    $user->setAuthenticated(1);
-    $userController->saveUserObjectInSession($user);
-    return $user;
-}
+
 
 
 
