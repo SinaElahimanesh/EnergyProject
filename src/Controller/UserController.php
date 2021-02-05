@@ -1,5 +1,7 @@
 <?php
 require_once ("databaseController.php");
+require_once ("PatentController.php");
+require_once ("IdeaController.php");
 require_once ("../Model/User.php");
 header("Content-Type: application/json; charset=UTF-8");
 
@@ -183,6 +185,8 @@ class UserController {
         if (! $result) {
             return $this->notFoundResponse();
         }
+        PatentController::deleteAllPatentOfUser($id);
+        IdeaController::deleteAllIdeasOfUser($id);
         $this->delete($id);
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = null;

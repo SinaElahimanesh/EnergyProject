@@ -76,7 +76,7 @@ class loginController
         $statement=$db->getConnection()->prepare("SELECT `login_time` FROM `users_sessions` WHERE `sessionId`=:sessionId");
         $statement->execute(array(':sessionId' => "$sessionId"));
         $result = $statement->fetch(PDO::FETCH_ASSOC);
-        if((time()-$result["login_time"])>604800){
+        if(is_array($result)&&(time()-$result["login_time"])>604800){
             unset($_COOKIE[session_name()]);
             $statement="DELETE FROM `users_sessions` WHERE `sessionId`='$sessionId'";
             $db->getConnection()->exec($statement);

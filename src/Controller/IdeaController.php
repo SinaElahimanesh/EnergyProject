@@ -33,6 +33,7 @@ class IdeaController {
                 $response = $this->updateIdeaFromRequest($this->ideaId);
                 break;
             case 'DELETE':
+
                 $response = $this->deleteIdea($this->ideaId);
                 break;
             default:
@@ -175,11 +176,11 @@ class IdeaController {
 
     private function findAllIdeasOfAUser($id) {
         // find all ideas of a user with ID $id
-        $statement = "SELECT * FROM IDEAS WHERE ownerId=?;";
+        $statement = "SELECT * FROM IDEAS WHERE ownerId='$id';";
         try {
             $db=new databaseController();
             $statement= $db->getConnection()->query($statement);
-            $statement->execute(array($id));
+            $statement->execute();
             $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
             return $result;
         } catch (\PDOException $e) {
@@ -194,7 +195,7 @@ class IdeaController {
             $db=new databaseController();
             $statement= $db->getConnection()->prepare($statement);
             $statement->execute(array($id));
-            $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+            $result = $statement->fetch(\PDO::FETCH_ASSOC);
             return $result;
         } catch (\PDOException $e) {
             exit($e->getMessage());
@@ -277,15 +278,32 @@ class IdeaController {
         // delete a idea
         $statement = "
             DELETE FROM IDEAS
-            WHERE id = :id;
+            WHERE idea_id = '$id';
         ";
         try {
             $db=new databaseController();
             $statement = $db->getConnection()->prepare($statement);
-            $statement->execute(array('id' => $id));
+            $statement->execute();
             return $statement->rowCount();
         } catch (\PDOException $e) {
             exit($e->getMessage());
         }
     }
+
+    public static function deleteAllIdeasOfUser($id){
+        $statement = "
+            DELETE FROM IDEAS
+            WHERE ownerId = '$id';
+        ";
+        try {
+            $db=new databaseController();
+            $statement = $db->getConnection()->prepare($statement);
+            $statement->execute();
+            return $statement->rowCount();
+        } catch (\PDOException $e) {
+            exit($e->getMessage());
+        }
+    }
+
+
 }

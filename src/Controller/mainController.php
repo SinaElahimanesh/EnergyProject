@@ -1,5 +1,5 @@
 <?php
-
+require_once ("PatentController.php");
 require_once("UserController.php");
 require_once ("loginController.php");
 require_once ("../Model/User.php");
@@ -52,21 +52,25 @@ elseif($uri[5]=="Idea" && $user->getEnabled()==1){
 
         $ideaController=new IdeaController("POST");
 
-    }elseif($requestedMethod=="GET" && isset($queries["type"]) && isset($uri[6])){
-        if($queries["type"]=="owner"){
+    }elseif($requestedMethod=="GET" ){
+        if(isset($queries["type"]) && isset($uri[6]) && $queries["type"]=="owner"){
             $ideaController=new IdeaController("GET",$uri[6],null,$user);
 
-        }elseif($queries["type"]=="idea"){
+        }
+        elseif(isset($queries["type"]) && isset($uri[6]) && $queries["type"]=="idea"){
             $ideaController=new IdeaController("GET",null,$uri[6],$user);
-        }else{
-            die();
+        }
+        else{
+            $ideaController=new IdeaController("GET",null,null,$user);
         }
 
     }elseif ($requestedMethod=="PUT" && isset($uri[6])){
             $ideaController=new IdeaController("PUT",null,$uri[6]);
-    }elseif ($requestedMethod=="DELETE" && isset($queries["type"]) && isset($uri[6])) {
+    }
+    elseif ($requestedMethod=="DELETE"&& isset($uri[6])) {
             $ideaController = new IdeaController("DELETE", null, $uri[6],$user);
-    }else{
+    }
+    else{
         die();
     }
     $ideaController->processRequest();
@@ -77,22 +81,21 @@ elseif ($uri[5]=="Patent" && $user->getEnabled()==1){
     if($requestedMethod=="POST"){
         $patentController=new PatentController("POST");
 
-    }elseif($requestedMethod=="GET" && isset($queries["type"]) && isset($uri[6])){
+    }elseif($requestedMethod=="GET"){
 
-        if($queries["type"]=="owner"){
+        if( isset($queries["type"]) && isset($uri[6]) && $queries["type"]=="owner"){
             $patentController=new PatentController("GET",null,$uri[6],$user);
 
-        }elseif($queries["type"]=="patent"){
+        }elseif(isset($queries["type"]) && isset($uri[6]) && $queries["type"]=="patent"){
             $patentController=new PatentController("GET",$uri[6],null,$user);
         }else{
-            die();
+            $patentController=new PatentController("GET",null,null,$user);
         }
 
-    }elseif ($requestedMethod=="PUT" && isset($queries["type"]) && isset($uri[6])){
-
+    }elseif ($requestedMethod=="PUT" && isset($uri[6])){
         $patentController=new PatentController("PUT",$uri[6],null);
 
-    }elseif ($requestedMethod=="DELETE" && isset($queries["type"]) && isset($uri[6])){
+    }elseif ($requestedMethod=="DELETE" && isset($uri[6])){
         $patentController=new PatentController("DELETE",$uri[6],null,$user);
     }else{
         die();
